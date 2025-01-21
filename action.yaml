@@ -5,7 +5,7 @@ description: 'This action downloads LieberLieber LemonTree.Automation for Sparx 
 inputs:
   License:
     description: 'A string containing the license information'
-    required: false
+    required: true
     default: ''
 outputs:
   LemonTreeAutomationExecutable:

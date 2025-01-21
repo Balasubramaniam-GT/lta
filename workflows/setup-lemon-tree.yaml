@@ -1,0 +1,21 @@
+name: Setup LemonTree Automation
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on pushes to the 'main' branch
+
+jobs:
+  setup-lemontree:
+    runs-on: windows-latest  # LemonTree Automation is typically for Windows
+
+    steps:
+      # Checkout the repository to access files
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Use your custom action
+      - name: Get LemonTreeAutomation
+        uses: ./  # Reference the `action.yaml` in the root directory of the repository
+        with:
+          License: ${{ secrets.LEMONTREE_LICENSE }}  # Use the GitHub secret
