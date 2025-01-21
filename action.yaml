@@ -14,6 +14,13 @@ outputs:
 runs:
   using: 'composite'
   steps:
-   - id: DownloadLTA
-    run: "& $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs '${{ runner.os }}' -License './license000_ANY.lic'"
+   steps:
+  - id: SetupLicense
+    run: |
+      $decoded = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${{ secrets.LEMONTREE_LICENSE }}'))
+      Set-Content -Path $env:HOME/license.lic -Value $decoded
+    shell: pwsh
+
+  - id: DownloadLTA
+    run: "& $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs '${{ runner.os }}' -License '$env:HOME/license.lic'"
     shell: pwsh
