@@ -1,21 +1,21 @@
-name: Setup LemonTree Automation
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  setup-lemontree:
-    runs-on: windows-latest
-
-    steps:
-      # Checkout the repository to access files
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Use the published LieberLieber action
-      - name: Get LemonTreeAutomation
-        uses: LieberLieber/setup-LemonTree.Automation@v1.0
-        with:
-          License: ${{ secrets.LEMONTREE_LICENSE }}  # Pass the secret here
+name: 'Get LemonTreeAutomation'
+description: 'This action downloads LieberLieber LemonTree.Automation for Sparx Systems Enterprise Architect on a build runner!'
+inputs:
+  License:
+    description: 'A string containing the license information'
+    required: true
+outputs:
+  LemonTreeAutomationExecutable:
+    description: 'Path to the Executable'
+    value: "${{ steps.DownloadLTA.outputs.LemonTreeAutomationExecutable }}"
+runs:
+  using: 'composite'
+  steps:
+    - id: DownloadLTA
+      shell: pwsh
+      run: |
+        param (
+          [string]$License
+        )
+        Write-Host "Using License: $License"
+        & $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs $env:RUNNER_OS -License $License
