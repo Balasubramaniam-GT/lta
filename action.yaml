@@ -18,4 +18,4 @@ runs:
           [string]$License
         )
         Write-Host "Using License: $License"
-        & $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs $env:RUNNER_OS -License $License
+        & $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs $env:RUNNER_OS -License ${{ secrets.LEMON_TREE_LICENSE }}
