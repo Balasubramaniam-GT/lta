@@ -1,19 +1,12 @@
-# action.yaml
-name: 'Get LemonTreeAutomation'
-uses: LieberLieber/setup-LemonTree.Automation@v1.0
-description: 'This action downloads LieberLieber LemonTree.Automation for Sparx Systems Enterprise Architect on a build runner!'
-inputs:
-  License:
-    description: 'A string containing the license information'
-    required: true
-    default: ''
-outputs:
-  LemonTreeAutomationExecutable:
-    description: 'Path to the Executable'
-    value: "${{steps.DownloadLTA.outputs.LemonTreeAutomationExecutable}}"
-runs:
-  using: 'composite'
-  steps:
-    - id: DownloadLTA
-      run: "& $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs '${{runner.os}}'-License '${{inputs.License}}'"
-      shell: pwsh
+  # download Lemontree.Automation on a runner and setup the license
+    name: GetLTA
+    uses: LieberLieber/setup-LemonTree.Automation@v6
+    id: GetLTA
+    with:
+      License: ${{secrets.LTALICENSE}} 
+  #ExeLocation &"${{steps.GetLTA.outputs.LemonTreeAutomationExecutable}}"
+  
+  # first simple use of LemonTree.Automation
+  - name: ConsistencyCheck
+    run: |
+      &"${{steps.GetLTA.outputs.LemonTreeAutomationExecutable}}" ConsistencyCheck --Model "model.qeax"
