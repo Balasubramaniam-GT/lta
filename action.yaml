@@ -5,7 +5,7 @@ description: 'This action downloads LieberLieber LemonTree.Automation for Sparx 
 inputs:
   License:
     description: 'A string containing the license information'
-    required: false
+    required: true
     default: 'LICENSE lieber lemontree3.automation 2099.12 31-dec-2025 single
   hostid=ANY share=h:32 issuer="LieberLieber Software GmbH" 
   customer="Sparx Systems India/ Prolaborate" issued=16-jan-2025
