@@ -14,6 +14,12 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - id: DownloadLTA
-      run: "& $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs '${{runner.os}}'-License '${{secrets.LEMON_TREE_LICENSE}}'"
-      shell: pwsh
+     - id: SetupLicense
+    run: |
+      $decoded = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('TElDRU5TRSBsaWViZXIgbGVtb250cmVlMy5hdXRvbWF0aW9uIDIwOTkuMTIgMzEtZGVjLTIwMjUgc2luZ2xlDQogIGhvc3RpZD1BTlkgc2hhcmU9aDozMiBpc3N1ZXI9IkxpZWJlckxpZWJlciBTb2Z0d2FyZSBHbWJIIiANCiAgY3VzdG9tZXI9IlNwYXJ4IFN5c3RlbXMgSW5kaWEvIFByb2xhYm9yYXRlIiBpc3N1ZWQ9MTYtamFuLTIwMjUNCiAgdHlwZT1kZW1vIF9jaz1mODFmZjY1NDNhIHNpZz0iNjBQMDQ1MEtCSDBHRUZCR1lOV0EyOTFGWDA1TjIyVEZHTjgxRFUNCiAgMDIySFBQRDVUSjhNNU42NTJCU0hUSFQ1NjdONE5FNjVTRlFDIg0K'))
+      Set-Content -Path $env:HOME/license.lic -Value $decoded
+    shell: pwsh
+
+  - id: DownloadLTA
+    run: "& $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs '${{ runner.os }}' -License '$env:HOME/license.lic'"
+    shell: pwsh
