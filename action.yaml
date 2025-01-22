@@ -1,5 +1,5 @@
   # download Lemontree.Automation on a runner and setup the license
-  - name: GetLTA
+    name: GetLTA
     uses: LieberLieber/setup-LemonTree.Automation@v6
     id: GetLTA
     with:
