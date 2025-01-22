@@ -1,21 +1,19 @@
+# action.yaml
 name: 'Get LemonTreeAutomation'
+uses: LieberLieber/setup-LemonTree.Automation@v1.0
 description: 'This action downloads LieberLieber LemonTree.Automation for Sparx Systems Enterprise Architect on a build runner!'
 inputs:
   License:
     description: 'A string containing the license information'
     required: true
+    default: ''
 outputs:
   LemonTreeAutomationExecutable:
     description: 'Path to the Executable'
-    value: "${{ steps.DownloadLTA.outputs.LemonTreeAutomationExecutable }}"
+    value: "${{steps.DownloadLTA.outputs.LemonTreeAutomationExecutable}}"
 runs:
   using: 'composite'
   steps:
     - id: DownloadLTA
+      run: "& $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs '${{runner.os}}'-License '${{secrets.LEMON_TREE_LICENSE}}'"
       shell: pwsh
-      run: |
-        param (
-          [string]$License
-        )
-        Write-Host "Using License: $License"
-        & $env:GITHUB_ACTION_PATH/getLTA.ps1 -RunnerOs $env:RUNNER_OS -License ${{ secrets.LEMON_TREE_LICENSE }}
