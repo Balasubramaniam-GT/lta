@@ -1,16 +1,12 @@
-# Copyright (c) LieberLieber Software GmbH
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
-name: Windows Test 
+name: Windows Test
 
 on:
- push:
+  push:
 
 env:
   ModelName: DemoModel
   ModelExtension: eapx
+  ACTION_PATH: ${{ vars.ACTION_PATH }}
 
 jobs:
   ConsistencyCheck:
@@ -24,18 +20,23 @@ jobs:
         with:
           lfs: true
           fetch-depth: 0
-      #Install LieberLieber LemonTree.Automation on the Action-Runner and prepare the license
-      #the secrets.LTALICENSE contains the text from the License File provided
-      - name: GetLTA
-        uses: ./
-        id: GetLTA
-        with:
-          License: ${{secrets.LTALICENSE}}
       
-      #Consitentcy Check is the most easy LemonTree.Automation operation for more advanced uses including diff and merge look at https://github.com/LieberLieber/LemonTree.Automation.Workflows
+      # Create the license file from the secret
+      - name: Set License File
+        run: |
+          echo "${{ secrets.bala }}" > license.lic
+      
+      - name: Verify License File
+        run: |
+          if (Test-Path license.lic) {
+            Write-Host "License file created successfully."
+          } else {
+            Write-Host "License file creation failed."
+          }
+        shell: pwsh
+      
+      # Run LemonTree.Automation using the license
       - name: ConsistencyCheck
         run: |
-          &"${{steps.GetLTA.outputs.LemonTreeAutomationExecutable}}" ConsistencyCheck --Model ${{env.ModelName}}.${{env.ModelExtension}}
- 
-     
-    
+          &"$Env:ACTION_PATH\LemonTreeAutomation.exe" ConsistencyCheck --Model ${{env.ModelName}}.${{env.ModelExtension}} --License license.lic
+        shell: pwsh
