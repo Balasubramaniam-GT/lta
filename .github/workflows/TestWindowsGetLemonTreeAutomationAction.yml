@@ -1,42 +1,22 @@
-name: Windows Test
+name: Test PowerShell Script
 
 on:
   push:
-
-env:
-  ModelName: DemoModel
-  ModelExtension: eapx
-  ACTION_PATH: ${{ vars.ACTION_PATH }}
+    branches:
+      - main
 
 jobs:
-  ConsistencyCheck:
-    defaults:
-      run:
-        shell: pwsh
+  test-script:
     runs-on: windows-latest
-    timeout-minutes: 15
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          lfs: true
-          fetch-depth: 0
-      
-      # Create the license file from the secret
-      - name: Set License File
-        run: |
-          echo "${{ secrets.bala }}" > license.lic
-      
-      - name: Verify License File
-        run: |
-          if (Test-Path license.lic) {
-            Write-Host "License file created successfully."
-          } else {
-            Write-Host "License file creation failed."
-          }
-        shell: pwsh
-      
-      # Run LemonTree.Automation using the license
-      - name: ConsistencyCheck
-        run: |
-          &"${{github.workspace}}\LTA\LemonTree.Automation.exe" ConsistencyCheck --Model ${{github.workspace}}\Balu.eapx --License ${{github.workspace}}\license.lic
-        shell: pwsh
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up PowerShell
+      uses: actions/setup-powershell@v2
+
+    - name: Run getLTA.ps1 script
+      run: |
+        Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+        .\getLTA.ps1 -License "my-license-key" -RunnerOs "Windows"
