@@ -17,6 +17,6 @@ jobs:
       shell: pwsh  # Use PowerShell Core (pwsh) on the runner
       run: |
         Set-ExecutionPolicy RemoteSigned -Scope Process -Force
-        & "$env:GITHUB_WORKSPACE\.github\LTA\LemonTree.Automation.exe" ConsistencyCheck --Model "model_name"
+        & ".\LTA\LemonTree.Automation.exe"  consistencycheck --model .\Balu.eapx
      
           
