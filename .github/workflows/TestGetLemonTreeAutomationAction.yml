@@ -15,15 +15,8 @@ jobs:
           with:
             lfs: true
             fetch-depth: 0
-
-        - name: GetLTA
-          uses: LieberLieber/setup-LemonTree.Automation@v6
-          id: GetLTA
-          with:
-           License: ${{secrets.LTALICENSE}} 
-           #ExeLocation &"${{steps.GetLTA.outputs.LemonTreeAutomationExecutable}}"
-
+            
         # first simple use of LemonTree.Automation
         - name: ConsistencyCheck
           run: |
-            &"${{steps.GetLTA.outputs.LemonTreeAutomationExecutable}}" ConsistencyCheck --Model "model.qeax"
+            &".github/LTA/LemonTree.Automation.exe" ConsistencyCheck --Model "model.qeax"
