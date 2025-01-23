@@ -8,7 +8,7 @@
 
 param
 (
-        [Parameter(Mandatory = $true, HelpMessage="Relative or absolute path to the EA model")][string] $Model = "..\DemoModel.eapx",
+        [Parameter(Mandatory = $true, HelpMessage="Relative or absolute path to the EA model")][string] $Model = "..\bala.eapx",
         [Parameter(Mandatory = $false, HelpMessage="Branch for cherry-picking, interactive selection if not provided")][string] $Branch = "",
         [Parameter(Mandatory = $false, HelpMessage="Comma-separated list of root GUIDs, if not provided extracted via database analysis")][string] $ModelRootIds = ""#,
         #for future use - filters are not supported by lemontree commandline - just by Session Files
@@ -91,13 +91,44 @@ function Download-VersionedFile
     )
     process
     {
-        #git fetch origin $commitID
-        $pointer = git cat-file blob ("$commitID"+":"+"$gitFilename")
-        $sha = ($pointer[1] -split(":"))[1]
-        $shaPart1 = $sha.Substring(0,2)
-        $shaPart2 = $sha.Substring(2,2)
-        git cat-file --filters ("$commitID"+":"+"$gitFilename") | Out-Null
-        copy ".git\lfs\objects\$shaPart1\$shaPart2\$sha" "$targetFileName"
+        # Define the commit ID and file name
+
+
+# Get the file reference from the commit using git ls-tree
+$fileInfo = git ls-tree -r $commitID | Select-String $gitFilename
+
+if ($fileInfo) {
+    # Extract the Blob SHA from the git ls-tree result
+    $blobSHA = ($fileInfo -split "\s+")[2]
+
+    # Retrieve the file content using git cat-file
+    $pointer = git cat-file blob $blobSHA
+
+    # Extract the SHA from the pointer
+    $sha = ($pointer -split ":")[1].Trim()
+
+    # Split SHA into parts for LFS object storage path
+    $shaPart1 = $sha.Substring(0, 2)
+    $shaPart2 = $sha.Substring(2, 2)
+
+    # Build the path to the LFS object
+    $lfsObjectPath = "C:\LemonTree-Automation"
+
+    # Check if the LFS object exists
+    if (Test-Path $lfsObjectPath) {
+        # Copy the LFS object to the target file path
+        Copy-Item $lfsObjectPath -Destination $targetFileName
+        Write-Host "File downloaded successfully to $targetFileName"
+    } else {
+        Write-Host "LFS object not found at $lfsObjectPath."
+    }
+    
+    # You can also copy the LFS object to your target file if needed
+    # copy ".git\lfs\objects\$shaPart1\$shaPart2\$sha" "$targetFileName"
+} else {
+    Write-Host "File '$gitFilename' not found in commit $commitID."
+}
+
     }
 }
 
@@ -185,7 +216,7 @@ function selectBranch{
             $branches = gitGetLocalBranches($Folder)
             Write-Host "Multiple branches were found."
             Write-Host "Please choose a branch:"
-
+ Write-Host "Aborted $Folder"
             1..$branches.Length | foreach-object { Write-Host "$($_): $($branches[$_-1])" }
 
             [ValidateScript({$_ -ge 0 -and $_ -le $branches.Length})]
