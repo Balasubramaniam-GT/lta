@@ -1,22 +1,22 @@
- # download Lemontree.Automation on a runner and setup the license
-name: setup-LemonTree.Automation Sample Workflow
+name: lemon PowerShell Script
+
 on:
-    push:
-     
+  push:
+    branches:
+      - main
+
 jobs:
-    setup-LemonTree: 
-      defaults:
-        run:
-          shell: pwsh
-      runs-on: [windows-latest] 
-      timeout-minutes: 15
-      steps:  
-        - uses: actions/checkout@v4
-          with:
-            lfs: true
-            fetch-depth: 0
-            
-        # first simple use of LemonTree.Automation
-        - name: ConsistencyCheck
-          run: |
-            &".github/LTA/LemonTree.Automation.exe" ConsistencyCheck --Model "model.qeax"
+  test-script:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Run getLTA.ps1 script
+      shell: pwsh  # Use PowerShell Core (pwsh) on the runner
+      run: |
+        Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+        & "$env:GITHUB_WORKSPACE\.github\LTA\LemonTree.Automation.exe" ConsistencyCheck --Model "model_name"
+     
+          
