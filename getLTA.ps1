@@ -1,4 +1,3 @@
-#getLTA.ps1
 param(
     [parameter(Mandatory = $false)]
     [string]$License,
@@ -6,60 +5,33 @@ param(
     [string]$RunnerOs 
 )
 
-if ($RunnerOs -eq 'Linux') 
-{
-    $LemonTreePackageURL = "https://nexus.lieberlieber.com/repository/lemontree-release/LemonTree.Automation/LemonTree.Automation.Linux.Zip_latest.zip"
-}
-elseif ($RunnerOs -eq 'Windows') 
-{
-    # somehow nexus is super slow on windows-latest
-    # $LemonTreePackageURL  = "https://nexus.lieberlieber.com/repository/lemontree-release/LemonTree.Automation/LemonTree.Automation.Windows.Zip_latest.zip"
-    $LemonTreePackageURL  = "https://www.lieberlieber.com/lemontree/automation/latest"
-}
-else 
-{
-    Write-Output '$RunnerOs is not supported'
-    Exit -1
+Write-Output "Testing PowerShell script execution..."
+
+# Check if parameters are provided
+if ([string]::IsNullOrWhiteSpace($License)) {
+    Write-Output "No License info provided."
+} else {
+    Write-Output "License info: $License"
 }
 
-Write-Output "Download LemonTree.Automtion from Repo"
-
-Invoke-WebRequest -URI "$LemonTreePackageURL" -OutFile "LTA.zip"
-Expand-Archive "LTA.zip" -DestinationPath ".\LTA\" -Force
-
-
-if([string]::IsNullOrWhiteSpace($License)) 
-{            
-    Write-Output "No License info provided."         
-} 
-else 
-{            
-    Write-Output "Create License File from provided info"
-    $License | Out-File -FilePath lta.lic #if you deploy the license on the fly
-}  
-
-if ($RunnerOs -eq 'Linux') 
-{
-    $LemonTreeExe = "./LTA/lemontree.automation"
-    #workaround because github artifacts logic doesn't maintain properties
-    chmod +x $LemonTreeExe            
-}
-elseif ($RunnerOs -eq 'Windows') 
-{
-    $LemonTreeExe  = ".\LTA\LemonTree.Automation.exe"
+if ($RunnerOs -eq 'Linux') {
+    Write-Output "Running on Linux"
+} elseif ($RunnerOs -eq 'Windows') {
+    Write-Output "Running on Windows"
+} else {
+    Write-Output "Unsupported OS: $RunnerOs"
 }
 
-if (Test-Path -path $LemonTreeExe)
-{
-    #Just to be sure if the executeable is not available - let's throw exitcode 1
+# Create a test output file to verify script execution
+$testOutput = "test_output.txt"
+"Test completed successfully on $(Get-Date)" | Out-File -FilePath $testOutput
 
-    Write-Output "LemonTreeAutomationExecutable=$LemonTreeExe" >> $env:GITHUB_OUTPUT
+# Check if the file was created
+if (Test-Path $testOutput) {
+    Write-Output "Test output file created successfully: $testOutput"
+} else {
+    Write-Output "Failed to create the output file."
+}
 
-    exit 0
-}
-else 
-{
-   Write-Output "Executable not found LemonTreeAutomationExecutable=$LemonTreeExe"
-    
-   exit 1
-}
+# Exit with success code
+exit 0
