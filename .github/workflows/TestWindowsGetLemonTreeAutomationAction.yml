@@ -13,10 +13,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up PowerShell
-      uses: powershell/setup-powershell@v2  # Correct action to set up PowerShell
-
     - name: Run getLTA.ps1 script
+      shell: pwsh  # Use PowerShell Core (pwsh) on the runner
       run: |
         Set-ExecutionPolicy RemoteSigned -Scope Process -Force
         .\getLTA.ps1 -License "my-license-key" -RunnerOs "Windows"
