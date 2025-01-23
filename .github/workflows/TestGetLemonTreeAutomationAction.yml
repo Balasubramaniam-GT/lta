@@ -17,6 +17,6 @@ jobs:
       shell: pwsh  # Use PowerShell Core (pwsh) on the runner
       run: |
         Set-ExecutionPolicy RemoteSigned -Scope Process -Force
-        & ".\LTA\LemonTree.Automation.exe"  consistencycheck --model .\Balu.eapx
+        & .\LTA\LemonTree.Automation.exe  consistencycheck --model .\Balu.eapx --license .\License\license.lic
      
           
