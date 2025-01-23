@@ -38,5 +38,5 @@ jobs:
       # Run LemonTree.Automation using the license
       - name: ConsistencyCheck
         run: |
-          &"${{github.workspace}}\LTA\LemonTree.Automation.exe" ConsistencyCheck --Model ${{env.ModelName}}.${{env.ModelExtension}} --License license.lic
+          &"${{github.workspace}}\LTA\LemonTree.Automation.exe" ConsistencyCheck --Model ${{github.workspace}}\Balu.eapx --License ${{github.workspace}}\license.lic
         shell: pwsh
