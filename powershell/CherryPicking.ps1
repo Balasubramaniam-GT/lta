@@ -8,7 +8,7 @@
 
 param
 (
-        [Parameter(Mandatory = $true, HelpMessage="Relative or absolute path to the EA model")][string] $Model = "..\DemoModel.eapx",
+        [Parameter(Mandatory = $true, HelpMessage="Relative or absolute path to the EA model")][string] $Model = "..\Lemon-test\balaRepo.eapx",
         [Parameter(Mandatory = $false, HelpMessage="Branch for cherry-picking, interactive selection if not provided")][string] $Branch = "",
         [Parameter(Mandatory = $false, HelpMessage="Comma-separated list of root GUIDs, if not provided extracted via database analysis")][string] $ModelRootIds = ""#,
         #for future use - filters are not supported by lemontree commandline - just by Session Files
@@ -93,11 +93,15 @@ function Download-VersionedFile
     {
         #git fetch origin $commitID
         $pointer = git cat-file blob ("$commitID"+":"+"$gitFilename")
-        $sha = ($pointer[1] -split(":"))[1]
-        $shaPart1 = $sha.Substring(0,2)
+        if ($pointer[1] -match ":") {
+    $sha = ($pointer[1] -split(":"))[1]
+    $shaPart1 = $sha.Substring(0,2)
         $shaPart2 = $sha.Substring(2,2)
         git cat-file --filters ("$commitID"+":"+"$gitFilename") | Out-Null
         copy ".git\lfs\objects\$shaPart1\$shaPart2\$sha" "$targetFileName"
+} else {
+    
+}
     }
 }
 
@@ -185,7 +189,7 @@ function selectBranch{
             $branches = gitGetLocalBranches($Folder)
             Write-Host "Multiple branches were found."
             Write-Host "Please choose a branch:"
-
+ Write-Host "Aborted $Folder"
             1..$branches.Length | foreach-object { Write-Host "$($_): $($branches[$_-1])" }
 
             [ValidateScript({$_ -ge 0 -and $_ -le $branches.Length})]
