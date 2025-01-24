@@ -1,37 +1,22 @@
-# Copyright (c) LieberLieber Software GmbH
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
-name: Ubuntu  Test
+name: lemon license PowerShell Script
 
 on:
- push:
-
-env:
-  ModelName: model
-  ModelExtension: qeax
+  push:
+    branches:
+      - main
 
 jobs:
-  ConsistencyCheck:
-    defaults:
-      run:
-        shell: pwsh
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          lfs: true
-          fetch-depth: 0
-      
+  test-script:
+    runs-on: windows-latest
 
-      - name: GetLTA
-        uses: ./
-        id: GetLTA
-        with:
-          License: ${{secrets.LTALICENSE}}
-      #Consitentcy Check is the most easy LemonTree.Automation operation for more advanced uses including diff and merge look at https://github.com/LieberLieber/LemonTree.Automation.Workflows
-      - name: ConsistencyCheck
-        run: |
-            &"${{steps.GetLTA.outputs.LemonTreeAutomationExecutable}}" ConsistencyCheck --Model ${{env.ModelName}}.${{env.ModelExtension}}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Run getLTA.ps1 script
+      shell: pwsh  # Use PowerShell Core (pwsh) on the runner
+      run: |
+        Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+        & .\LTA\LemonTree.Automation.exe  consistencycheck --model .\Balu.eapx --license ${{secrets.LTALICENSE}}
+     
+          
