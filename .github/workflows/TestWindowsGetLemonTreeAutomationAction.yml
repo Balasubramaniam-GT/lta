@@ -17,4 +17,4 @@ jobs:
       shell: pwsh  # Use PowerShell Core (pwsh) on the runner
       run: |
         Set-ExecutionPolicy RemoteSigned -Scope Process -Force
-        .\getLTA.ps1 -License "my-license-key" -RunnerOs "Windows"
+        .\CherryPicking.ps1 -Model ".\Balu.eapx" -Branch "prod-v1"
