@@ -8,8 +8,8 @@
 
 param
 (
-        [Parameter(Mandatory = $true, HelpMessage="Relative or absolute path to the EA model")][string] $Model = "..\bala.eapx",
-        [Parameter(Mandatory = $false, HelpMessage="Branch for cherry-picking, interactive selection if not provided")][string] $Branch = "",
+        [Parameter(Mandatory = $true, HelpMessage="Relative or absolute path to the EA model")][string] $Model = "..\balu.eapx",
+        [Parameter(Mandatory = $false, HelpMessage="Branch for cherry-picking, interactive selection if not provided")][string] $Branch = "prod-v1",
         [Parameter(Mandatory = $false, HelpMessage="Comma-separated list of root GUIDs, if not provided extracted via database analysis")][string] $ModelRootIds = ""#,
         #for future use - filters are not supported by lemontree commandline - just by Session Files
         #[Parameter(Mandatory = $false)][boolean] $conflicedFilter = 1 #if set to 1 it will add conflicted filters in the session
